@@ -32,12 +32,12 @@ contract RealEstateContract {
         _;
     }
 
-    constructor(address _buyer, uint _totalPurchasePrice, uint _downPaymentDate, uint _downPaymentAmount uint _closingDate) {
+    constructor(address _buyer, uint _totalPurchasePrice, uint _downPaymentDate, uint _downPaymentAmount, uint _closingDate) {
         seller = msg.sender;
         buyer = _buyer;
         totalPurchasePrice = _totalPurchasePrice;
         downPaymentDate = _downPaymentDate;
-        downPaymentAmount = _downPaymentamount;
+        downPaymentAmount = _downPaymentAmount;
         closingDate = _closingDate;
         usdtToken = ERC20(0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48);
     }
@@ -61,7 +61,7 @@ contract RealEstateContract {
     }
 
     function makeDownPayment() public payable onlyBuyer {
-        totalPurchasePrice = totalPurchasePrice - downPaymentAmount
+        totalPurchasePrice = totalPurchasePrice - downPaymentAmount;
         require(state == ContractState.OnInspection, "Down payment can only be made during the inspection phase.");
         require(block.timestamp < downPaymentDate, "Down payment period has ended.");
         require(usdtToken.transferFrom(buyer, seller, downPaymentAmount), "Down payment transfer failed");
@@ -96,7 +96,7 @@ contract RealEstateContract {
             require(state != ContractState.TitleCleared, "Buyer cannot cancel after title is cleared.");
             state = ContractState.Completed;
         }
-        uint refundAmount = purchasePrice / 2;
+        uint refundAmount = totalPurchasePrice / 2;
         require(usdtToken.transferFrom(seller, buyer, refundAmount), "Refund transfer failed");
     }
 }
