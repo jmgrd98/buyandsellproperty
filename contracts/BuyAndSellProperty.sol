@@ -7,10 +7,10 @@ contract RealEstateContract {
     ERC20 public usdtToken = ERC20(0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48);
     address public seller;
     address public buyer;
-    uint public totalPurchasePrice;
-    uint public downPaymentDate;
-    uint public downPaymentAmount;
-    uint public closingDate;
+    uint256 public totalPurchasePrice;
+    uint256 public downPaymentDate;
+    uint256 public downPaymentAmount;
+    uint256 public closingDate;
     bool public propertyInspected;
     bool public titleCleared;
 
@@ -32,7 +32,15 @@ contract RealEstateContract {
         _;
     }
 
-    constructor(address _buyer, uint _totalPurchasePrice, uint _downPaymentDate, uint _downPaymentAmount, uint _closingDate) {
+    constructor(
+        address _buyer,
+        uint256 _totalPurchasePrice,
+        uint256 _downPaymentDate,
+        uint256 _downPaymentAmount,
+        uint256 _closingDate
+        )
+        
+    {
         seller = msg.sender;
         buyer = _buyer;
         totalPurchasePrice = _totalPurchasePrice;
@@ -40,6 +48,10 @@ contract RealEstateContract {
         downPaymentAmount = _downPaymentAmount;
         closingDate = _closingDate;
         usdtToken = ERC20(0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48);
+    }
+
+    function setDownPaymentDate(uint256 _downPaymentDate) public {
+        downPaymentDate = _downPaymentDate;
     }
 
     function requestInspection() public onlyBuyer {
