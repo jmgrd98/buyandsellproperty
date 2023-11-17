@@ -50,6 +50,42 @@ contract RealEstateContract {
         usdtToken = ERC20(0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48);
     }
 
+    function getSeller() public view returns(address) {
+        return seller;
+    }
+
+    function getBuyer() public view returns(address) {
+        return buyer;
+    }
+
+    function getTotalPurchasePrice() public view returns (uint256) {
+    return totalPurchasePrice;
+}
+
+function getDownPaymentDate() public view returns (uint256) {
+    return downPaymentDate;
+}
+
+function getDownPaymentAmount() public view returns (uint256) {
+    return downPaymentAmount;
+}
+
+function getClosingDate() public view returns (uint256) {
+    return closingDate;
+}
+
+function getPropertyInspected() public view returns (bool) {
+    return propertyInspected;
+}
+
+function getTitleCleared() public view returns (bool) {
+    return titleCleared;
+}
+
+function getState() public view returns (ContractState) {
+    return state;
+}
+
     function setDownPaymentDate(uint256 _downPaymentDate) public {
         downPaymentDate = _downPaymentDate;
     }
