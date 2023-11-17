@@ -14,7 +14,13 @@ contract RealEstateContract {
     bool public propertyInspected;
     bool public titleCleared;
 
-    enum ContractState { Created, OnInspection, Inspected, TitleCleared, Completed }
+    enum ContractState {
+        Created,
+        OnInspection,
+        Inspected,
+        TitleCleared,
+        Completed
+    }
     ContractState public state = ContractState.Created;
 
     event InspectionRequested();
@@ -38,9 +44,7 @@ contract RealEstateContract {
         uint256 _downPaymentDate,
         uint256 _downPaymentAmount,
         uint256 _closingDate
-        )
-        
-    {
+    ) {
         seller = msg.sender;
         buyer = _buyer;
         totalPurchasePrice = _totalPurchasePrice;
@@ -50,54 +54,60 @@ contract RealEstateContract {
         usdtToken = ERC20(0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48);
     }
 
-    function getSeller() public view returns(address) {
+    function getSeller() public view returns (address) {
         return seller;
     }
 
-    function getBuyer() public view returns(address) {
+    function getBuyer() public view returns (address) {
         return buyer;
     }
 
     function getTotalPurchasePrice() public view returns (uint256) {
-    return totalPurchasePrice;
-}
+        return totalPurchasePrice;
+    }
 
-function getDownPaymentDate() public view returns (uint256) {
-    return downPaymentDate;
-}
+    function getDownPaymentDate() public view returns (uint256) {
+        return downPaymentDate;
+    }
 
-function getDownPaymentAmount() public view returns (uint256) {
-    return downPaymentAmount;
-}
+    function getDownPaymentAmount() public view returns (uint256) {
+        return downPaymentAmount;
+    }
 
-function getClosingDate() public view returns (uint256) {
-    return closingDate;
-}
+    function getClosingDate() public view returns (uint256) {
+        return closingDate;
+    }
 
-function getPropertyInspected() public view returns (bool) {
-    return propertyInspected;
-}
+    function getPropertyInspected() public view returns (bool) {
+        return propertyInspected;
+    }
 
-function getTitleCleared() public view returns (bool) {
-    return titleCleared;
-}
+    function getTitleCleared() public view returns (bool) {
+        return titleCleared;
+    }
 
-function getState() public view returns (ContractState) {
-    return state;
-}
+    function getState() public view returns (ContractState) {
+        return state;
+    }
 
     function setDownPaymentDate(uint256 _downPaymentDate) public {
         downPaymentDate = _downPaymentDate;
     }
 
     function requestInspection() public onlyBuyer {
-        require(state == ContractState.Created, "Inspection already requested.");
+        require(
+            state == ContractState.Created,
+            "Inspection already requested."
+        );
         state = ContractState.OnInspection;
         emit InspectionRequested();
     }
 
     function completeInspection(bool _propertyInspected) public onlySeller {
-        require(state == ContractState.OnInspection, "Inspection must be requested first.");
+        require(
+            state == ContractState.OnInspection,
+            "Inspection must be requested first."
+        );
         propertyInspected = _propertyInspected;
         emit InspectionCompleted(propertyInspected);
         if (propertyInspected) {
@@ -110,25 +120,46 @@ function getState() public view returns (ContractState) {
 
     function makeDownPayment() public payable onlyBuyer {
         totalPurchasePrice = totalPurchasePrice - downPaymentAmount;
-        require(state == ContractState.OnInspection, "Down payment can only be made during the inspection phase.");
-        require(block.timestamp < downPaymentDate, "Down payment period has ended.");
-        require(usdtToken.transferFrom(buyer, seller, downPaymentAmount), "Down payment transfer failed");
+        require(
+            state == ContractState.OnInspection,
+            "Down payment can only be made during the inspection phase."
+        );
+        require(
+            block.timestamp < downPaymentDate,
+            "Down payment period has ended."
+        );
+        require(
+            usdtToken.transferFrom(buyer, seller, downPaymentAmount),
+            "Down payment transfer failed"
+        );
     }
 
     function makeFinalPayment() public payable onlyBuyer {
-        require(state == ContractState.Completed, "Final payment can only be made after the transaction is completed.");
+        require(
+            state == ContractState.Completed,
+            "Final payment can only be made after the transaction is completed."
+        );
         require(block.timestamp < closingDate, "Closing date has passed.");
-        require(usdtToken.transferFrom(buyer, seller, totalPurchasePrice), "Final payment transfer failed");
+        require(
+            usdtToken.transferFrom(buyer, seller, totalPurchasePrice),
+            "Final payment transfer failed"
+        );
     }
 
     function clearTitle() public onlySeller {
-        require(state == ContractState.TitleCleared, "Title can only be cleared after inspection.");
+        require(
+            state == ContractState.TitleCleared,
+            "Title can only be cleared after inspection."
+        );
         titleCleared = true;
         state = ContractState.Completed;
     }
 
     function transferOwnership() public onlySeller {
-        require(state == ContractState.Completed, "Transaction must be completed.");
+        require(
+            state == ContractState.Completed,
+            "Transaction must be completed."
+        );
         seller = buyer;
         buyer = address(0);
         state = ContractState.Created;
@@ -136,15 +167,24 @@ function getState() public view returns (ContractState) {
     }
 
     function cancelContract() public {
-        require(state != ContractState.Completed, "Contract cannot be canceled after completion.");
-    
+        require(
+            state != ContractState.Completed,
+            "Contract cannot be canceled after completion."
+        );
+
         if (msg.sender == seller) {
             state = ContractState.Completed;
         } else if (msg.sender == buyer) {
-            require(state != ContractState.TitleCleared, "Buyer cannot cancel after title is cleared.");
+            require(
+                state != ContractState.TitleCleared,
+                "Buyer cannot cancel after title is cleared."
+            );
             state = ContractState.Completed;
         }
         uint refundAmount = totalPurchasePrice / 2;
-        require(usdtToken.transferFrom(seller, buyer, refundAmount), "Refund transfer failed");
+        require(
+            usdtToken.transferFrom(seller, buyer, refundAmount),
+            "Refund transfer failed"
+        );
     }
 }
