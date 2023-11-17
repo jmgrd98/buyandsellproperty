@@ -4,9 +4,32 @@ import {ethers} from 'ethers';
 
 const StateContext = createContext();
 
-const {contract} = useContract('0x27Ace49abcCf046E55eC268fB041E3a5b7284762');
+export const StateContextProvider = ({children}) => {
+    const {contract} = useContract('0xaBF4B67FBCf2DB45a20b493fd86d02d3E10b789A');
+    
+    const address = useAddress();
+    const connect = useMetamask();
 
-const address = useAddress();
-const connect = useMetamask();
+    async function getSeller() {
+        const seller = await this.contract.call('getSeller');
+        console.log(seller);
+    }
+
+    return (
+        <StateContext.Provider
+            value={{
+                address,
+                contract,
+                connect,
+                getSeller
+            }}
+        >
+            {children}
+        </StateContext.Provider>
+    )
+}
+
+export const useStateContext = () => useContext(StateContext);
+
 
 

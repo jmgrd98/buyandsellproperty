@@ -8,7 +8,9 @@ function MyApp({ Component, pageProps }) {
 			activeChain={ChainId.Mumbai}
 			clientId={process.env.NEXT_PUBLIC_TEMPLATE_CLIENT_ID}
 		>
+			    <StateContextProvider>
 			<Component {...pageProps} />
+        </StateContextProvider>
 		</ThirdwebProvider>
 	);
 }
