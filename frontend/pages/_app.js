@@ -1,5 +1,6 @@
 import { ThirdwebProvider, ChainId } from '@thirdweb-dev/react';
 import '../styles/globals.css';
+import { StateContextProvider } from '../context';
 
 
 function MyApp({ Component, pageProps }) {
@@ -8,9 +9,9 @@ function MyApp({ Component, pageProps }) {
 			activeChain={ChainId.Mumbai}
 			clientId={process.env.NEXT_PUBLIC_TEMPLATE_CLIENT_ID}
 		>
-			    <StateContextProvider>
+			        <StateContextProvider>
 			<Component {...pageProps} />
-        </StateContextProvider>
+			</StateContextProvider>
 		</ThirdwebProvider>
 	);
 }

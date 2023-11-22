@@ -2,14 +2,17 @@
 
 import { useEffect, useState } from 'react';
 import { ethers } from 'ethers';
-import {Button} from "@/components/ui/button";
+import { useStateContext } from '../context';
 
 export default function Home() {
-  const [provider, setProvider] = useState(null);
-  const [contract, setContract] = useState(null);
+
+  const {contract, address} = useStateContext();
 
   useEffect(() => {
-    // Connect to Ethereum network
+    console.log(contract);
+  })
+
+  useEffect(() => {
     async function connect() {
       if (typeof window.ethereum !== 'undefined') {
         const ethereum = window.ethereum;
@@ -42,7 +45,6 @@ export default function Home() {
     }
   };
 
-  // Function to complete inspection
   const completeInspection = async () => {
     try {
       const tx = await contract.completeInspection(true); // Pass 'true' or 'false' based on inspection status
@@ -81,11 +83,10 @@ export default function Home() {
 
 
       <section className='flex gap-5 text-center align-items justify-center'>
-        <Button>I'm a button</Button>
-      <button onClick={requestInspection}>Request Inspection</button>
+      {/* <button onClick={requestInspection}>Request Inspection</button>
       <button onClick={completeInspection}>Complete Inspection</button>
       <button onClick={clearTitle}>Clear Title</button>
-      <button onClick={transferOwnership}>Transfer Ownership</button>
+      <button onClick={transferOwnership}>Transfer Ownership</button> */}
       </section>
 
 
